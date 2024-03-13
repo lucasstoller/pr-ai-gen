@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "pr_ai_gen"
-  spec.version       = "0.1.0"
+  spec.version       = "0.1.1"
   spec.authors       = ["Lucas Stoller"]
   spec.email         = ["l.s.stoller@gmail.com"]
   spec.summary       = "A CLI tool to generate pull requests using OpenAI"
@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files`.split($/)
   spec.bindir        = "exe"
-  spec.executables   = spec.executables = ['pr-ai-gen']
+  spec.executables   = spec.executables = ['pr_ai_gen']
   spec.require_paths = ["lib"]
 
   spec.add_dependency "git", "~> 1.19.1"
