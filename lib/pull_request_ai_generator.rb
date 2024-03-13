@@ -14,6 +14,7 @@ class PullRequestAIGenerator
     @diff = nil
     @pr_content = nil
     @git_repo = nil
+    @config = nil
   end
 
   def init
@@ -28,13 +29,41 @@ class PullRequestAIGenerator
 
     if File.exist?(credentials_path)
       puts 'Credentials file already exists!'
-      return
+    else
+      puts 'Please enter your OpenAI API key:'
+      openai_token = STDIN.gets.chomp
+      File.write(credentials_path, "OPENAI_TOKEN=#{openai_token}\n")
+      puts 'Credentials file created successfully!'
     end
 
-    puts 'Please enter your OpenAI API key:'
-    openai_token = STDIN.gets.chomp
-    File.write(credentials_path, "OPENAI_TOKEN=#{openai_token}\n")
-    puts 'Credentials file created successfully!'
+    puts 'Configuring ChatGPT integration'
+    puts 'Please choose the OpenAI API model:'
+    puts '1. gpt-4-turbo-preview'
+    puts '2. gpt-4'
+    puts '3. gpt-3.5-turbo'
+    
+    model = nil
+    while model.nil?
+      case STDIN.gets.chomp
+      when '1'
+        model = 'gpt-4-turbo-preview'
+      when '2'
+        model = 'gpt-4'
+      when '3'
+        model = 'gpt-3.5-turbo'
+      else
+        puts 'Invalid model! Please choose a valid model:'
+      end
+    end
+
+    config = {
+      openai: {
+        model: model,
+        max_tokens: 1024
+      }
+    }
+
+    File.write(File.join(pr_gem_path, 'config.yml'), config.to_yaml)
   end
 
   def run
@@ -42,6 +71,7 @@ class PullRequestAIGenerator
     fetch_diff
     load_template
     get_openai_token
+    get_config
     generate_pr_content
     print_content
   end
@@ -110,6 +140,15 @@ class PullRequestAIGenerator
     end
   end
 
+  def get_config
+    config_path = File.join(File.expand_path('~/.pr-gem'), 'config.yml')
+    if File.exist?(config_path)
+      @config = YAML.load_file(config_path)
+    else
+      raise "Config file not found!"
+    end
+  end
+
   def get_openai_token
     credentials_path = File.expand_path('~/.pr-gem/credentials')
     if File.exist?(credentials_path)
@@ -132,14 +171,14 @@ class PullRequestAIGenerator
         "Authorization" => "Bearer #{@openai_token}"
       },
       body: {
-        model: "gpt-4-turbo-preview",
+        model: @config[:openai][:model],
         messages: [
           {
             role: "user",
             content: "fill this templete:\n #{@template}\n with the following changes:\n #{@diff.to_s}"
           },
         ],
-        max_tokens: 1024
+        max_tokens: @config[:openai][:max_tokens]
       }.to_json
     )
 

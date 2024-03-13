@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "pr_ai_gen"
-  spec.version       = "0.1.1"
+  spec.version       = "0.2.0"
   spec.authors       = ["Lucas Stoller"]
   spec.email         = ["l.s.stoller@gmail.com"]
   spec.summary       = "A CLI tool to generate pull requests using OpenAI"
