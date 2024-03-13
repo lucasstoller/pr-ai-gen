@@ -1,15 +1,11 @@
 require 'optparse'
 require 'git'
 require 'httparty'
-require 'octokit'
-require 'capybara/dsl'
 require 'pry'
 
 # Define the CLI class
 class PullRequestAIGenerator
   OPEN_AI_URL = "https://api.openai.com/v1"
-
-  include Capybara::DSL
 
   attr_reader :options
 
