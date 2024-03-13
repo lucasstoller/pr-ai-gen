@@ -1,5 +1,5 @@
 Gem::Specification.new do |spec|
-  spec.name          = "pr-ai-gen"
+  spec.name          = "pr_ai_gen"
   spec.version       = "0.1.0"
   spec.authors       = ["Lucas Stoller"]
   spec.email         = ["l.s.stoller@gmail.com"]

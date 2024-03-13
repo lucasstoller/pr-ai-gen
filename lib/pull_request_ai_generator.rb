@@ -17,7 +17,7 @@ class PullRequestAIGenerator
   end
 
   def init
-    puts 'Initializing pr-ai-gen...'
+    puts 'Initializing PR AI Generator...'
     credentials_path = File.expand_path('~/.pr-gem/credentials')
     pr_gem_path = File.expand_path('~/.pr-gem')
 
@@ -38,7 +38,7 @@ class PullRequestAIGenerator
   end
 
   def run
-    puts 'Running pr-ai-gen...'
+    puts 'Running PR AI Generator...'
     fetch_diff
     load_template
     get_openai_token
@@ -49,7 +49,17 @@ class PullRequestAIGenerator
   private
 
   def parse_options(args)
-    options = { target_branch: 'main', directory_location: File.expand_path("."), command: :run }
+    OptionParser.new do |opts|
+      opts.banner = "Usage: pr_ai_gen generate <directory_location> <branch>:<target-branch=main>"
+
+      opts.on("-h", "--help", "Prints this help") do
+        puts opts
+        exit
+      end
+
+    end.parse!(args)
+
+    options = { target_branch: 'main', directory_location: File.expand_path("."), command: :run } 
 
     if args[0] == 'init'
       options[:command] = :init
@@ -68,16 +78,6 @@ class PullRequestAIGenerator
     else
       raise Exception.new "Invalid command!"
     end
-
-    OptionParser.new do |opts|
-      opts.banner = "Usage: pr-ai-gen <directory_location> <branch>:<target-branch=main>"
-
-      opts.on("-h", "--help", "Prints this help") do
-        puts opts
-        exit
-      end
-
-    end.parse!(args)
 
     options
   end
